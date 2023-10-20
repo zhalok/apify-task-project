@@ -1,11 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Req } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Post } from './post.schema';
 
 @Injectable()
 export class PostsService {
-  create(createPostDto: CreatePostDto) {
+  constructor(@InjectModel(Post.name) private postModel: Model<Post>) {}
+  async create(createPostDto: CreatePostDto, req: any) {
     // console.log()
+    // console.log(req.user);
+    // const postInfo = {...createPostDto, user: req.user}
+    await this.postModel.create(createPostDto);
     return 'This action adds a new post';
   }
 

@@ -15,4 +15,4 @@ export class Post {
   user: mongoose.Schema.Types.ObjectId;
 }
 
-export const UserSchema = SchemaFactory.createForClass(Post);
+export const PostSchema = SchemaFactory.createForClass(Post);
