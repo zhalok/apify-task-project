@@ -9,6 +9,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PostsModule } from './posts/posts.module';
 import { CommentsModule } from './comments/comments.module';
 import { RepliesModule } from './replies/replies.module';
+import { ReactionsModule } from './reactions/reactions.module';
 
 @Module({
   controllers: [AppController],
@@ -32,6 +33,7 @@ import { RepliesModule } from './replies/replies.module';
     PostsModule,
     CommentsModule,
     RepliesModule,
+    ReactionsModule,
   ],
 })
 export class AppModule {}

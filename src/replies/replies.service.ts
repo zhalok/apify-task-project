@@ -43,7 +43,7 @@ export class RepliesService {
       { text, updatedAt: Date.now() },
       { new: true },
     );
-    console.log(updatedReply);
+    // console.log(updatedReply);
     return {
       message: 'reply updated',
       reply: updatedReply,
