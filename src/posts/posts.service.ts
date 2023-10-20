@@ -9,11 +9,11 @@ import { Post } from './post.schema';
 export class PostsService {
   constructor(@InjectModel(Post.name) private postModel: Model<Post>) {}
   async create(createPostDto: CreatePostDto, req: any) {
-    // console.log()
-    // console.log(req.user);
-    // const postInfo = {...createPostDto, user: req.user}
-    await this.postModel.create(createPostDto);
-    return 'This action adds a new post';
+    const newPost = await this.postModel.create(createPostDto);
+    return {
+      message: 'new post created',
+      post: newPost,
+    };
   }
 
   findAll() {
