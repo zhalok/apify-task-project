@@ -24,11 +24,11 @@ export class PostsController {
 
   @Roles(Role.USER)
   @UseGuards(JwtGuard)
-  @Post('create-new-post')
+  @Post()
   create(@Body() createPostDto: CreatePostDto, @Req() req: any) {
     // console.log(req.user);
     createPostDto['user'] = req?.user?.user;
-    return this.postsService.create(createPostDto, req);
+    return this.postsService.create(createPostDto);
   }
 
   @Get()
@@ -38,16 +38,24 @@ export class PostsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.postsService.findOne(+id);
+    return this.postsService.findOne(id);
   }
 
+  @UseGuards(JwtGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
-    return this.postsService.update(+id, updatePostDto);
+  update(
+    @Param('id') id: string,
+    @Body() updatePostDto: UpdatePostDto,
+    @Req() req: any,
+  ) {
+    updatePostDto['user'] = req?.user?.user;
+    return this.postsService.update(id, updatePostDto);
   }
 
+  @UseGuards(JwtGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postsService.remove(+id);
+  remove(@Param('id') id: string, @Req() req: any) {
+    const user = req?.user?.user;
+    return this.postsService.remove(id, user);
   }
 }
