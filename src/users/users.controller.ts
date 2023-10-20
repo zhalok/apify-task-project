@@ -1,10 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete,UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { GetCurrentUserId } from '../common/decorators/get-current-user-id.decorator';
 import { JwtGuard } from '../common/guards/jwt.guard';
-import { User } from './user.schema';
+import { User } from './schemas/user.schema';
 
 @Controller('users')
 export class UsersController {
@@ -19,10 +28,10 @@ export class UsersController {
   findAll() {
     return this.usersService.findAll();
   }
-  
+
   @UseGuards(JwtGuard)
   @Get('me')
-  me(@GetCurrentUserId() id:string):Promise<User>{
+  me(@GetCurrentUserId() id: string): Promise<User> {
     return this.usersService.getProfile(id);
   }
 

@@ -3,7 +3,7 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Post } from './post.schema';
+import { Post } from './schemas/post.schema';
 
 @Injectable()
 export class PostsService {
@@ -17,7 +17,7 @@ export class PostsService {
   }
 
   async findAll() {
-    const allPosts = await this.postModel.find();
+    const allPosts = await this.postModel.findOne();
     return {
       message: 'all posts',
       posts: allPosts,

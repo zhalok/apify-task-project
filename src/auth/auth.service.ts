@@ -6,7 +6,7 @@ import { SignupDto } from './dto/signup.dto';
 import { JwtService } from '@nestjs/jwt';
 // import bcrypt from 'bcrypt';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from '../users/user.schema';
+import { User } from '../users/schemas/user.schema';
 import { Model } from 'mongoose';
 const bcrypt = require('bcrypt');
 
