@@ -3,7 +3,7 @@ import { CreateReactionDto } from './dto/create-reaction.dto';
 import { UpdateReactionDto } from './dto/update-reaction.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Reaction } from './schemas/reaction.schema';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 
 @Injectable()
 export class ReactionsService {
@@ -21,7 +21,32 @@ export class ReactionsService {
   }
 
   async findAll(post: string) {
-    const reactions = await this.reactionModel.find({ reactionFor: post });
+    const reactions = await this.reactionModel.aggregate([
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'user',
+          foreignField: '_id',
+          as: 'user',
+        },
+      },
+      {
+        $unwind: {
+          path: '$user',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $match: {
+          reactionFor: new mongoose.Types.ObjectId(post),
+        },
+      },
+      {
+        $project: {
+          'user.password': 0,
+        },
+      },
+    ]);
     return {
       message: 'all reactions',
       reactions: reactions,
@@ -37,15 +62,16 @@ export class ReactionsService {
     return `This action updates a #${id} reaction`;
   }
 
-  async remove(id: string, user: string) {
+  async remove(post: string, user: string) {
     const removedReaction = await this.reactionModel.findOneAndDelete({
-      _id: id,
+      // _id: id,
+      reactionFor: post,
       user: user,
     });
     return {
       message: 'reaction deleted',
       reaction: removedReaction,
     };
-    return `This action removes a #${id} reaction`;
+    // return `This action removes a #${id} reaction`;
   }
 }

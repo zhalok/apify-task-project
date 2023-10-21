@@ -45,10 +45,10 @@ export class ReactionsController {
   // }
 
   @UseGuards(JwtGuard)
-  @Delete(':id')
-  remove(@Param('id') id: string, @Req() req: any) {
+  @Delete(':post')
+  remove(@Param('post') post: string, @Req() req: any) {
     const user = req?.user?.user;
-    return this.reactionsService.remove(id, user);
+    return this.reactionsService.remove(post, user);
     // return this.reactionsService.remove(id);
   }
 }

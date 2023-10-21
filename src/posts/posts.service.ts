@@ -4,12 +4,21 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Post } from './schemas/post.schema';
+import { Notification } from 'src/notifications/schemas/notification.schema';
 
 @Injectable()
 export class PostsService {
-  constructor(@InjectModel(Post.name) private postModel: Model<Post>) {}
+  constructor(
+    @InjectModel(Post.name) private postModel: Model<Post>,
+    @InjectModel(Notification.name)
+    private notificationModel: Model<Notification>,
+  ) {}
   async create(createPostDto: CreatePostDto) {
     const newPost = await this.postModel.create(createPostDto);
+    const newNotification = await this.notificationModel.create({
+      text: 'new post created',
+      notificationFor: newPost._id,
+    });
     return {
       message: 'new post created',
       post: newPost,
@@ -17,7 +26,29 @@ export class PostsService {
   }
 
   async findAll() {
-    const allPosts = await this.postModel.findOne();
+    const allPosts = await this.postModel.aggregate([
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'user',
+          foreignField: '_id',
+          as: 'user',
+        },
+      },
+
+      {
+        $unwind: {
+          path: '$user',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+
+      {
+        $project: {
+          'user.password': 0,
+        },
+      },
+    ]);
     return {
       message: 'all posts',
       posts: allPosts,

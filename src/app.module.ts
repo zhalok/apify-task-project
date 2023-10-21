@@ -10,6 +10,8 @@ import { PostsModule } from './posts/posts.module';
 import { CommentsModule } from './comments/comments.module';
 import { RepliesModule } from './replies/replies.module';
 import { ReactionsModule } from './reactions/reactions.module';
+import { EmailModule } from './email/email.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   controllers: [AppController],
@@ -34,6 +36,8 @@ import { ReactionsModule } from './reactions/reactions.module';
     CommentsModule,
     RepliesModule,
     ReactionsModule,
+    EmailModule,
+    NotificationsModule,
   ],
 })
 export class AppModule {}
