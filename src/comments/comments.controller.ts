@@ -25,7 +25,7 @@ export class CommentsController {
     return this.commentsService.create(createCommentDto);
   }
 
-  @Get(':post')
+  @Get('all/:post')
   findAll(@Param('post') post: string) {
     // ['user'] = req?.user?.user;
 
