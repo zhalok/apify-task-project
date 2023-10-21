@@ -33,15 +33,48 @@ export class NotificationsService {
           preserveNullAndEmptyArrays: true,
         },
       },
+
+      {
+        $lookup: {
+          from: 'comments',
+          localField: 'post._id',
+          foreignField: 'post',
+          as: 'comment',
+        },
+      },
+      {
+        $unwind: {
+          path: '$comment',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'comment.user',
+          foreignField: '_id',
+          as: 'commenter',
+        },
+      },
+      {
+        $unwind: {
+          path: '$commenter',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
       {
         $match: {
           'post.user': new mongoose.Types.ObjectId(user),
         },
       },
+
       {
         $project: {
-          title: 1,
-          text: 1,
+          'post.image': 0,
+          'commenter.password': 0,
+
+          // title: 1,
+          // text: 1,
         },
       },
     ]);

@@ -15,10 +15,7 @@ export class PostsService {
   ) {}
   async create(createPostDto: CreatePostDto) {
     const newPost = await this.postModel.create(createPostDto);
-    const newNotification = await this.notificationModel.create({
-      text: 'new post created',
-      notificationFor: newPost._id,
-    });
+
     return {
       message: 'new post created',
       post: newPost,
