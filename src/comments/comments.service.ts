@@ -17,8 +17,8 @@ export class CommentsService {
     const newComment = await this.commentModel.create(createCommentDto);
 
     const newNotification = await this.notificationModel.create({
-      title: 'A comment is added to your post',
-      text: createCommentDto['text'],
+      // title: 'A comment is added to your post',
+      text: 'a comment is added to your post',
       notificationFor: createCommentDto['post'],
     });
     return {

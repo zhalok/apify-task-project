@@ -7,8 +7,8 @@ export type NotificationDocument = HydratedDocument<Notification>;
 
 @Schema()
 export class Notification {
-  @Prop()
-  title: string;
+  //   @Prop()
+  //   title: string;
 
   @Prop({ required: true })
   text: string;
