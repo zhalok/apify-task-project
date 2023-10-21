@@ -35,12 +35,12 @@ export class NotificationsController {
     return this.notificationsService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateNotificationDto: UpdateNotificationDto,
-  ) {
-    return this.notificationsService.update(+id, updateNotificationDto);
+  @UseGuards(JwtGuard)
+  @Patch('')
+  update(@Req() req: any) {
+    const user = req?.user?.user;
+    // console.log(req?.user);
+    return this.notificationsService.update(user);
   }
 
   @Delete(':id')

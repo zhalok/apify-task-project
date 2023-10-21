@@ -18,6 +18,7 @@ export class NotificationsService {
 
   async findAll(user: any) {
     // console.log(post);
+    // console.log(user);
     const notifications = await this.notificationModel.aggregate([
       {
         $lookup: {
@@ -34,34 +35,34 @@ export class NotificationsService {
         },
       },
 
-      {
-        $lookup: {
-          from: 'comments',
-          localField: 'post._id',
-          foreignField: 'post',
-          as: 'comment',
-        },
-      },
-      {
-        $unwind: {
-          path: '$comment',
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'comment.user',
-          foreignField: '_id',
-          as: 'commenter',
-        },
-      },
-      {
-        $unwind: {
-          path: '$commenter',
-          preserveNullAndEmptyArrays: true,
-        },
-      },
+      // {
+      //   $lookup: {
+      //     from: 'comments',
+      //     localField: 'post._id',
+      //     foreignField: 'post',
+      //     as: 'comment',
+      //   },
+      // },
+      // {
+      //   $unwind: {
+      //     path: '$comment',
+      //     preserveNullAndEmptyArrays: true,
+      //   },
+      // },
+      // {
+      //   $lookup: {
+      //     from: 'users',
+      //     localField: 'comment.user',
+      //     foreignField: '_id',
+      //     as: 'commenter',
+      //   },
+      // },
+      // {
+      //   $unwind: {
+      //     path: '$commenter',
+      //     preserveNullAndEmptyArrays: true,
+      //   },
+      // },
       {
         $match: {
           'post.user': new mongoose.Types.ObjectId(user),
@@ -79,6 +80,7 @@ export class NotificationsService {
       },
     ]);
     return {
+      length: notifications.length,
       message: 'all notifications for post ',
       notifications: notifications,
     };
@@ -89,8 +91,48 @@ export class NotificationsService {
     return `This action returns a #${id} notification`;
   }
 
-  update(id: number, updateNotificationDto: UpdateNotificationDto) {
-    return `This action updates a #${id} notification`;
+  async update(user: any) {
+    console.log(user);
+    const notifications = await this.notificationModel.aggregate([
+      {
+        $lookup: {
+          from: 'posts',
+          localField: 'notificationFor',
+          foreignField: '_id',
+          as: 'post',
+        },
+      },
+      {
+        $unwind: {
+          path: '$post',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+
+      {
+        $match: {
+          'post.user': new mongoose.Types.ObjectId(user),
+          checked: false,
+        },
+      },
+
+      {
+        $project: {
+          // 'post.image': 0,
+          _id: 1,
+        },
+      },
+    ]);
+    const newNotifications = await this.notificationModel.updateMany(
+      { _id: { $in: notifications } },
+      { $set: { checked: true } },
+      { new: true },
+    );
+    return {
+      message: 'all notifications for post ',
+      notifications: newNotifications,
+    };
+    // return `This action updates a #${id} notification`;
   }
 
   remove(id: number) {
