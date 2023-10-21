@@ -3,13 +3,15 @@ import { CreateReplyDto } from './dto/create-reply.dto';
 import { UpdateReplyDto } from './dto/update-reply.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Reply } from './schemas/replies.schema';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
+import { Notification } from 'src/notifications/schemas/notification.schema';
 
 @Injectable()
 export class RepliesService {
   constructor(@InjectModel(Reply.name) private replyModel: Model<Reply>) {}
   async create(createReplyDto: CreateReplyDto) {
     const newReply = await this.replyModel.create(createReplyDto);
+
     return {
       message: 'new reply created',
       reply: newReply,
@@ -17,8 +19,39 @@ export class RepliesService {
   }
 
   async findAll(comment) {
-    console.log('comment', comment);
-    const replies = await this.replyModel.find({ comment });
+    // console.log('comment', comment);
+    const replies = await this.replyModel.aggregate([
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'user',
+          foreignField: '_id',
+          as: 'user',
+        },
+      },
+      {
+        $unwind: {
+          path: '$user',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+
+      {
+        $match: {
+          comment: new mongoose.Types.ObjectId(comment.trim()),
+        },
+      },
+      {
+        $project: {
+          'user.password': 0,
+        },
+      },
+    ]);
+
+    // const replies = await this.replyModel.find({
+    //   comment: comment.trim(),
+    // });
+
     return {
       message: 'all replies',
       replies: replies,
@@ -36,6 +69,7 @@ export class RepliesService {
 
   async update(id: string, updateReplyDto: UpdateReplyDto) {
     const { user, text } = updateReplyDto;
+    console.log(id);
     console.log(text);
     console.log(user);
     const updatedReply = await this.replyModel.findOneAndUpdate(

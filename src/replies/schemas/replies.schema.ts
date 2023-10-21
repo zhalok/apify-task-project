@@ -22,9 +22,9 @@ export class Reply {
   @Prop({
     required: true,
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Comment',
+    // ref: Comment.name,
   })
-  comment: Comment;
+  comment: mongoose.Schema.Types.ObjectId;
 }
 
 export const ReplySchema = SchemaFactory.createForClass(Reply);

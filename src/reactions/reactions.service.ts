@@ -4,15 +4,24 @@ import { UpdateReactionDto } from './dto/update-reaction.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Reaction } from './schemas/reaction.schema';
 import mongoose, { Model } from 'mongoose';
+import { Notification } from 'src/notifications/schemas/notification.schema';
 
 @Injectable()
 export class ReactionsService {
   constructor(
     @InjectModel(Reaction.name) private reactionModel: Model<Reaction>,
+    @InjectModel(Notification.name)
+    private notificationModel: Model<Notification>,
   ) {}
 
   async create(createReactionDto: CreateReactionDto) {
     const reaction = await this.reactionModel.create(createReactionDto);
+    const notification = await this.notificationModel.create({
+      notificationFor: createReactionDto?.reactionFor,
+      text: 'New reaction was added',
+      // notificationBy: createReactionDto?.user,
+      // notificationType: 'reaction',
+    });
     return {
       message: 'new reaction created',
       reaction: reaction,
