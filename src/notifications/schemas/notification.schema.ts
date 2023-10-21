@@ -15,6 +15,9 @@ export class Notification {
 
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId })
   notificationFor: Post;
+
+  @Prop({ default: false })
+  checked: boolean;
 }
 
 export const NotificationSchema = SchemaFactory.createForClass(Notification);
