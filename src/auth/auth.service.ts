@@ -65,14 +65,14 @@ export class AuthService {
         .createHash('sha256')
         .update(verifyToken)
         .digest('hex');
-      const mailOptions = {
-        from: process.env.Mail,
-        // @ts-ignore
-        to: user.email,
-        subject: 'Verify you Ambel account',
-        html: `<h1>Your verification code is ${verifyToken}</h1><p>Use this code on Ambel 2-factor authentication</p>`,
-        text: `Your verification code is ${verifyToken}`,
-      };
+      // const mailOptions = {
+      //   from: process.env.Mail,
+      //   // @ts-ignore
+      //   to: user.email,
+      //   subject: 'Verify you Ambel account',
+      //   html: `<h1>Your verification code is ${verifyToken}</h1><p>Use this code on Ambel 2-factor authentication</p>`,
+      //   text: `Your verification code is ${verifyToken}`,
+      // };
       // await gMail.sendMail(mailOptions);
 
       // console.log(user);
